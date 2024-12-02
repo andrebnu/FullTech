@@ -14,7 +14,7 @@ namespace BancoChu.API.Data
        
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // Configura a precisão e escala para as propriedades decimal
+            // Configura as propriedades decimal
             modelBuilder.Entity<Conta>()
                 .Property(c => c.Saldo)
                 .HasColumnType("decimal(18,2)"); 

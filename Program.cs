@@ -8,14 +8,14 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Configura o DbContext com a connection string
+// Configura o DbContext
 builder.Services.AddDbContext<BancoChuContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("BancoChuConnection")));
 
-// Outros serviços
+
 builder.Services.AddControllers();
 
-// Configuração da autenticação JWT
+// autenticação JWT
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -24,18 +24,18 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateIssuer = true,
             ValidateAudience = true,
             ValidateLifetime = true,
-            ValidIssuer = builder.Configuration["Jwt:Issuer"],  // Adapte conforme sua configuração
-            ValidAudience = builder.Configuration["Jwt:Audience"],  // Adapte conforme sua configuração
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:SecretKey"]))  // Chave secreta
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],  
+            ValidAudience = builder.Configuration["Jwt:Audience"],  
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:SecretKey"]))  
         };
     });
 
-// Swagger para documentação da API com suporte a autenticação JWT
+// Swagger para documentação
 builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new OpenApiInfo { Title = "BancoChu API", Version = "v1" });
 
-    // Configuração do esquema de segurança para JWT
+    // esquema de segurança  JWT
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         In = ParameterLocation.Header,
@@ -63,7 +63,7 @@ builder.Services.AddSwaggerGen(options =>
 
 var app = builder.Build();
 
-// Configuração do Swagger para desenvolvimento
+// Configuração do Swagger
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -72,11 +72,11 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-// Adiciona autenticação e autorização
+
 app.UseAuthentication();
 app.UseAuthorization();
 
-// Mapeia os controladores
+
 app.MapControllers();
 
 app.Run();

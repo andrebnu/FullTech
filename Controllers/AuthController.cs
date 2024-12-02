@@ -24,7 +24,7 @@ namespace BancoChu.API.Controllers
         [HttpPost("login")]
         public IActionResult Login([FromBody] LoginModel login)
         {
-            if (login.Username == "admin" && login.Password == "admin") // Aqui você deve validar suas credenciais
+            if (login.Username == "admin" && login.Password == "admin") //Coloquei fixo por falta de Tempo.
             {
                 var token = GenerateJwtToken(login.Username);
                 return Ok(new { Token = token });
@@ -38,15 +38,15 @@ namespace BancoChu.API.Controllers
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name, username),
-                // Aqui você pode adicionar mais claims conforme necessário
+                
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:SecretKey"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var token = new JwtSecurityToken(
-                issuer: _configuration["Jwt:Issuer"], // Pegando do appsettings.json
-                audience: _configuration["Jwt:Audience"], // Pegando do appsettings.json
+                issuer: _configuration["Jwt:Issuer"], 
+                audience: _configuration["Jwt:Audience"], 
                 claims: claims,
                 expires: DateTime.Now.AddMinutes(5),
                 signingCredentials: creds

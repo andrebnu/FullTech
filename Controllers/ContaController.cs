@@ -61,7 +61,7 @@ namespace BancoChu.API.Controllers
             {
                 // Adicionando a nova conta no banco
                 _context.Contas.Add(conta);
-                await _context.SaveChangesAsync(); // Salva as alterações no banco
+                await _context.SaveChangesAsync(); 
 
                 
                 return CreatedAtAction(nameof(Get), new { id = conta.Id }, conta);

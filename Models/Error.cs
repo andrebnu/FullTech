@@ -1,5 +1,4 @@
-﻿// BancoChu.API/Models/ErrorResponse.cs
-namespace BancoChu.API.Models
+﻿namespace BancoChu.API.Models
 {
     public class Error
     {
