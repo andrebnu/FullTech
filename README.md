@@ -17,7 +17,7 @@ Antes de começar, verifique se você tem os seguintes itens instalados:
 
 Clone o repositório para sua máquina local com o comando:
 
-```bash
+`bash
 git clone (https://github.com/andrebnu/FullTech)
 
 2. Restaurar Pacotes
@@ -128,5 +128,76 @@ Status Codes Comuns:
 404 NotFound: Recurso não encontrado.
 500 Internal Server Error: Erro inesperado no servidor.
 
+Docker
+Se você preferir rodar a aplicação usando Docker, siga as instruções abaixo para construir e executar o projeto em containers.
+1. Dockerfile
+O Dockerfile fornece a configuração necessária para construir e rodar a aplicação BancoChu API em um container. Abaixo está o Dockerfile que você pode usar:
+# Etapa 1: Build
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+WORKDIR /app
 
+# Copia os arquivos de projeto e restaura as dependências
+COPY *.csproj ./
+RUN dotnet restore
 
+# Copia o restante do código e compila o projeto
+COPY . ./
+RUN dotnet publish -c Release -o /out
+
+# Etapa 2: Runtime
+FROM mcr.microsoft.com/dotnet/aspnet:6.0
+WORKDIR /app
+
+# Copia os arquivos publicados da etapa de build
+COPY --from=build /out ./
+
+# Expõe as portas da aplicação
+EXPOSE 5000
+EXPOSE 5001
+
+# Define o comando para iniciar a aplicação
+ENTRYPOINT ["dotnet", "BancoChu.API.dll"]
+Este Dockerfile realiza o build da aplicação em duas etapas (multi-stage build). Ele primeiro compila o código e depois cria uma imagem de runtime otimizada com apenas os arquivos necessários para rodar a aplicação.
+
+2. Docker Compose
+Para facilitar a execução da aplicação junto com seus serviços, como banco de dados, você pode usar o Docker Compose. Aqui está um exemplo de arquivo docker-compose.yml:
+
+version: '3.8'
+
+services:
+  banco-chu-api:
+    image: banco-chu-api
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5000:80"  # Porta do host -> Porta no container (HTTP)
+      - "5001:443" # Caso tenha HTTPS configurado, mapear a porta 5001
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development # Mudar para "Production" em produção
+      - DOTNET_RUNNING_IN_CONTAINER=true
+      - DOTNET_USE_POLLING_FILE_WATCHER=true
+    networks:
+      - bancochuapi_banco-chu-network
+
+networks:
+  bancochuapi_banco-chu-network:
+    driver: bridge
+  Esse arquivo docker-compose.yml configura o serviço banco-chu-api para construir a imagem a partir do Dockerfile e mapear as portas 5000 (HTTP) e 5001 (HTTPS), além de definir algumas variáveis de ambiente para o ambiente de desenvolvimento.
+
+3. Passos para Rodar a Aplicação com Docker
+Para rodar a aplicação BancoChu API em containers Docker, siga os seguintes passos:
+
+Passo 1: Build da Imagem Docker
+No diretório raiz do seu projeto, execute o seguinte comando para construir a imagem Docker:
+bash :docker-compose build
+Passo 2: Subir os Containers
+Após o build da imagem, inicie os containers com o comando:
+bash : docker-compose up
+Isso vai iniciar a aplicação na URL http://localhost:5000 ou https://localhost:5001 (se você configurou o HTTPS).
+
+Você pode testar os endpoints usando o Swagger ou ferramentas como Postman.
+
+Passo 4: Parar os Containers
+Para parar os containers, execute:
+bash : docker-compose down
