@@ -128,6 +128,7 @@ Status Codes Comuns:
 404 NotFound: Recurso não encontrado.
 500 Internal Server Error: Erro inesperado no servidor.
 
+
 Docker
 Se você preferir rodar a aplicação usando Docker, siga as instruções abaixo para construir e executar o projeto em containers.
 
