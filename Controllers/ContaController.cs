@@ -25,6 +25,7 @@ namespace BancoChu.API.Controllers
         // Endpoint para listar todas as contas
         [HttpGet]
         [SwaggerOperation(Summary = "Busca todas as contas ja cadastradas.")]
+        [ApiVersion("1.0")]
         public async Task<ActionResult<IEnumerable<Conta>>> Get()
         {
             try
@@ -42,6 +43,7 @@ namespace BancoChu.API.Controllers
         // Endpoint para criar uma nova conta
         [HttpPost]
         [SwaggerOperation(Summary = " Endpoint para criar uma nova conta.")]
+        [ApiVersion("1.0")]
         public async Task<ActionResult<Conta>> Post([FromBody] Conta conta)
         {
             if (conta == null)

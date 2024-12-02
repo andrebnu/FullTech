@@ -55,6 +55,7 @@ namespace BancoChu.API.Controllers
         // Endpoint para transferências
         [HttpPost]
         [SwaggerOperation(Summary = "Realiza uma transferência de valores.")]
+        [ApiVersion("1.0")]
         public async Task<ActionResult<Transferencia>> Post([FromBody] Transferencia transferencia)
         {
             
@@ -103,9 +104,10 @@ namespace BancoChu.API.Controllers
 
         [HttpGet("extrato")]
         [SwaggerOperation(Summary = "Lista o extrato entre periodos.")]
+        [ApiVersion("1.0")]
         public async Task<ActionResult<IEnumerable<Transferencia>>> GerarExtratoPorPeriodo([FromQuery] string dataInicio, [FromQuery] string dataFim)
         {
-            // precisei converter o formato da data p/ DateTime
+            // precisei converter o formato da data p/ DateTime para o usuario não precisar usar a formatação 2024/12/01
             DateTime dataInicioParsed;
             DateTime dataFimParsed;
 
@@ -140,6 +142,7 @@ namespace BancoChu.API.Controllers
         // Endpoint para obter uma transferência por ID
         [HttpGet("{id}")]
         [SwaggerOperation(Summary = "Busca os dados da transferencia por um ID.")]
+        [ApiVersion("1.0")]
         public async Task<ActionResult<Transferencia>> Get(int id)
         {
             var transferencia = await _context.Transferencias.FindAsync(id);
