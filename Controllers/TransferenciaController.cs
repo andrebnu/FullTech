@@ -9,6 +9,8 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Caching.Memory;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace BancoChu.API.Controllers
 {
@@ -18,11 +20,11 @@ namespace BancoChu.API.Controllers
     public class TransferenciaController : ControllerBase
     {
         private readonly BancoChuContext _context;
-
-        
-        public TransferenciaController(BancoChuContext context)
+        private readonly IMemoryCache _memoryCache;
+        public TransferenciaController(BancoChuContext context, IMemoryCache memoryCache)
         {
             _context = context;
+            _memoryCache = memoryCache;
         }
 
         // busca os feriados do ano
@@ -30,18 +32,29 @@ namespace BancoChu.API.Controllers
 
         private async Task<List<DateTime>> ObterFeriadosAsync()
         {
-            using (var client = new HttpClient())
+            if (!_memoryCache.TryGetValue("feriados", out List<DateTime> feriados))
             {
-                var response = await client.GetStringAsync(FeriadosApiUrl);
-                var feriados = JsonConvert.DeserializeObject<List<Feriado>>(response);
+                // Se não tiver no cache, faz a requisição
+                using (var client = new HttpClient())
+                {
+                    var response = await client.GetStringAsync(FeriadosApiUrl);
+                    var feriadosApi = JsonConvert.DeserializeObject<List<Feriado>>(response);
 
-                // Converte as datas
-                return feriados.Select(f => DateTime.Parse(f.Date)).ToList();
+                    
+                    feriados = feriadosApi.Select(f => DateTime.Parse(f.Date)).ToList();
+
+                    // Armazenando no cache por 1 hora
+                    _memoryCache.Set("feriados", feriados, TimeSpan.FromHours(1));
+                }
             }
+
+            return feriados;
+        
         }
 
         // Endpoint para transferências
         [HttpPost]
+        [SwaggerOperation(Summary = "Realiza uma transferência de valores.")]
         public async Task<ActionResult<Transferencia>> Post([FromBody] Transferencia transferencia)
         {
             
@@ -89,6 +102,7 @@ namespace BancoChu.API.Controllers
         }
 
         [HttpGet("extrato")]
+        [SwaggerOperation(Summary = "Lista o extrato entre periodos.")]
         public async Task<ActionResult<IEnumerable<Transferencia>>> GerarExtratoPorPeriodo([FromQuery] string dataInicio, [FromQuery] string dataFim)
         {
             // precisei converter o formato da data p/ DateTime
@@ -125,6 +139,7 @@ namespace BancoChu.API.Controllers
 
         // Endpoint para obter uma transferência por ID
         [HttpGet("{id}")]
+        [SwaggerOperation(Summary = "Busca os dados da transferencia por um ID.")]
         public async Task<ActionResult<Transferencia>> Get(int id)
         {
             var transferencia = await _context.Transferencias.FindAsync(id);

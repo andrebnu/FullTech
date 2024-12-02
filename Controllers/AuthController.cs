@@ -4,6 +4,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using Swashbuckle.AspNetCore.Annotations;
 using System.Collections.Generic;
 using System;
 
@@ -20,8 +21,9 @@ namespace BancoChu.API.Controllers
             _configuration = configuration;
         }
 
-        // POST: api/Auth/l ogi
+        // POST: api/Auth/logi
         [HttpPost("login")]
+        [SwaggerOperation(Summary = "Realiza o login para obter o token. Usuário e senha fixos (admin) para fins de teste.")]
         public IActionResult Login([FromBody] LoginModel login)
         {
             if (login.Username == "admin" && login.Password == "admin") //Coloquei fixo por falta de Tempo.

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace BancoChu.API.Controllers
 {
@@ -23,6 +24,7 @@ namespace BancoChu.API.Controllers
 
         // Endpoint para listar todas as contas
         [HttpGet]
+        [SwaggerOperation(Summary = "Busca todas as contas ja cadastradas.")]
         public async Task<ActionResult<IEnumerable<Conta>>> Get()
         {
             try
@@ -39,6 +41,7 @@ namespace BancoChu.API.Controllers
 
         // Endpoint para criar uma nova conta
         [HttpPost]
+        [SwaggerOperation(Summary = " Endpoint para criar uma nova conta.")]
         public async Task<ActionResult<Conta>> Post([FromBody] Conta conta)
         {
             if (conta == null)

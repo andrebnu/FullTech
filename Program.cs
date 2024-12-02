@@ -12,6 +12,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<BancoChuContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("BancoChuConnection")));
 
+// Adicionando o MemoryCache
+builder.Services.AddMemoryCache();
 
 builder.Services.AddControllers();
 
@@ -33,7 +35,10 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 // Swagger para documentação
 builder.Services.AddSwaggerGen(options =>
 {
-    options.SwaggerDoc("v1", new OpenApiInfo { Title = "BancoChu API", Version = "v1" });
+    options.SwaggerDoc("v1", new OpenApiInfo { Title = "BancoChu API", Version = "v1", Description = "API para obter o token. Usuário e senha fixos (admin) para fins de teste." });
+   
+    //anotações ao Swagger
+    options.EnableAnnotations();
 
     // esquema de segurança  JWT
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
