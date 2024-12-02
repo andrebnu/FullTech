@@ -130,7 +130,8 @@ Status Codes Comuns:
 
 Docker
 Se você preferir rodar a aplicação usando Docker, siga as instruções abaixo para construir e executar o projeto em containers.
-1. Dockerfile
+
+Dockerfile
 O Dockerfile fornece a configuração necessária para construir e rodar a aplicação BancoChu API em um container. Abaixo está o Dockerfile que você pode usar:
 # Etapa 1: Build
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
