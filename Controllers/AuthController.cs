@@ -20,7 +20,7 @@ namespace BancoChu.API.Controllers
             _configuration = configuration;
         }
 
-        // POST: api/Auth/login
+        // POST: api/Auth/l ogi
         [HttpPost("login")]
         public IActionResult Login([FromBody] LoginModel login)
         {
@@ -30,7 +30,7 @@ namespace BancoChu.API.Controllers
                 return Ok(new { Token = token });
             }
 
-            return Unauthorized(new { Message = "Credenciais inválidas. Verifique o nome de usuário e a senha." });
+            return Unauthorized(new { Message = "Credenciais inválidas. Verifique o nome de usuário e a senha. " });
         }
 
         private string GenerateJwtToken(string username)
